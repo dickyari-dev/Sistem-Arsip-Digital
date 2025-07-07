@@ -14,23 +14,28 @@ return new class extends Migration
         Schema::create('surats', function (Blueprint $table) {
             $table->id();
             $table->string('nama_surat');
+            $table->string('slug')->unique();
             $table->string('nomor_surat')->unique();
-            $table->string('file_surat'); // path ke file PDF
             $table->string('kode_surat')->nullable();
+            $table->string('file_surat'); // path ke file PDF
             $table->date('tanggal_surat');
             $table->string('pengirim');
             $table->string('penerima');
 
             // Tambahan untuk surat masuk / keluar jika diperlukan
-            $table->enum('jenis_surat', ['masuk', 'keluar'])->default('masuk');
+            $table->enum('jenis_surat', ['masuk', 'keluar', 'lainnya'])->default('masuk');
 
             // Status disposisi
-            $table->enum('status_disposisi', ['pending', 'disposisi', 'revisi'])->default('pending');
-            $table->text('keterangan_revisi')->nullable();        // catatan tambahan
+            $table->enum('status_disposisi', ['pending', 'disposisi'])->default('pending');
+
+            // Kolom revisi
+            $table->text('status_revisi')->nullable();
+            $table->text('keterangan_revisi')->nullable();        
+            $table->text('jawaban_revisi')->nullable();        
 
             // Kolom tambahan
-            $table->text('perihal')->nullable();           // isi ringkasan surat
-            $table->text('keterangan')->nullable();        // catatan tambahan
+            $table->text('perihal')->nullable();          
+            $table->text('keterangan')->nullable();        
             $table->foreignId('admin_id')->nullable()->constrained('users')->nullOnDelete(); // yang input
             $table->timestamps();
         });

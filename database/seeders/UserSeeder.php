@@ -42,6 +42,25 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'name' => 'Dicky Ari Putra',
+                'email' => 'dicky@gmail.com',
+                'password' => Hash::make('password'),
+                'role' => 'pegawai',
+                'email_verified_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Siti Nurhalisa',
+                'email' => 'siti@gmail.com',
+                'password' => Hash::make('password'),
+                'role' => 'pegawai',
+                'email_verified_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
         ]);
     }
 }

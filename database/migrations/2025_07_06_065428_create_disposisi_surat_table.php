@@ -11,23 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('disposisis', function (Blueprint $table) {
+        Schema::create('disposisi_surat', function (Blueprint $table) {
             $table->id();
 
-            // Relasi ke surat
+            // FK ke tabel surat
             $table->foreignId('surat_id')->constrained('surats')->onDelete('cascade');
 
-            // Relasi ke user camat
-            $table->foreignId('camat_id')->constrained('users')->onDelete('cascade');
-
-            // Relasi ke user pegawai
+            // FK ke pegawai penerima disposisi (user)
             $table->foreignId('pegawai_id')->constrained('users')->onDelete('cascade');
 
-            // Isi disposisi
+            // FK user yang mendisposisikan
+            $table->foreignId('dari_user_id')->nullable()->constrained('users')->onDelete('set null');
+
+            // Catatan tambahan
             $table->text('catatan')->nullable();
 
-            // Waktu disposisi
-            $table->timestamp('tanggal_disposisi')->nullable();
+            // Status disposisi
+            $table->enum('status', ['belum_dibaca', 'dibaca', 'selesai'])->default('belum_dibaca');
 
             $table->timestamps();
         });
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('disposisis');
+        Schema::dropIfExists('disposisi_surat');
     }
 };

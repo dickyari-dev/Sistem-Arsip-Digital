@@ -74,13 +74,14 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Surat</th>
+                            <th>Camat Pendisposisi</th>
                             <th>Nomor</th>
                             <th>Kode</th>
-                            <th>Tanggal</th>
+                            <th>Tanggal Surat</th>
                             <th>Jenis</th>
-                            <th>Status Disposisi</th>
-                            <th>Status Revisi</th>
                             <th>File</th>
+                            <th>Keterangan Disposisi</th>
+                            <th>Status Dibaca</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -89,6 +90,7 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $surat->nama_surat }}</td>
+                            <td>{{ $surat->nama_camat_pendisposisi }}</td>
                             <td>{{ $surat->nomor_surat }}</td>
                             <td>{{ $surat->kode_surat ?? '-' }}</td>
                             <td>{{ \Carbon\Carbon::parse($surat->tanggal_surat)->format('d/m/Y') }}</td>
@@ -97,24 +99,6 @@
                                 <span class="badge bg-primary">Surat Masuk</span>
                                 @elseif ($surat->jenis_surat === 'keluar')
                                 <span class="badge bg-danger">Surat Masuk</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if($surat->status_disposisi === 'disposisi')
-                                <span class="badge bg-primary">Terdisposisi</span>
-                                @elseif($surat->status_disposisi === 'revisi')
-                                <span class="badge bg-warning text-dark">Perlu Revisi</span>
-                                @else
-                                <span class="badge bg-secondary">Pending</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if($surat->status_revisi === 'selesai')
-                                <span class="badge bg-primary">Selesai Revisi</span>
-                                @elseif($surat->status_revisi === 'revisi')
-                                <span class="badge bg-warning text-dark">Perlu Revisi</span>
-                                @else
-                                <span class="badge bg-secondary">Menunggu Konfirmasi</span>
                                 @endif
                             </td>
                             <td>
@@ -127,19 +111,18 @@
                                 <span class="text-muted">Tidak Ada File</span>
                                 @endif
                             </td>
+                            <td>{{ $surat->catatan ? $surat->catatan : '-' }}</td>
+                            <td>
+                                @if ($surat->status_dibaca === 'belum_dibaca')
+                                    <span class="badge bg-secondary">Belum Dibaca</span>
+                                @else
+                                    <span class="badge bg-primary">Sudah Dibaca</span>
+                                @endif
+                            </td>
                             <td>
                                 {{-- Tambahkan route edit/delete jika ada --}}
                                 <a href="{{ route('surat.detail', $surat->slug) }}"
                                     class="btn btn-sm btn-info">Detail</a>
-                                <a href="{{ route('admin.surat.edit', $surat->slug) }}"
-                                    class="btn btn-sm btn-warning">Edit</a>
-                                <form action="{{ route('admin.surat.delete') }}" method="POST"
-                                    style="display:inline-block;"
-                                    onsubmit="return confirm('Yakin ingin hapus surat ini?')">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $surat->id }}">
-                                    <button class="btn btn-sm btn-danger">Hapus</button>
-                                </form>
                             </td>
                         </tr>
                         @empty

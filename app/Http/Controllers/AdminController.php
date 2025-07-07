@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Surat;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -35,8 +38,15 @@ class AdminController extends Controller
             'file_surat'     => 'required|mimes:pdf, doc, docx, xls, xlsx|max:10048',
         ]);
 
+        // Create Slug 
+        $random = Str::random(5); // bisa diubah panjangnya
+        $namaSuratSlug = Str::slug($validated['nama_surat']);
+        $validated['slug'] = $random . '-' . $namaSuratSlug;
+
         $validated['file_surat'] = $request->file('file_surat')->store('surat_files', 'public');
         $validated['admin_id'] = auth()->id();
+        $validated['status_disposisi'] = 'pending';
+        $validated['status_revisi'] = 'pending';
 
         Surat::create($validated);
 
@@ -46,7 +56,6 @@ class AdminController extends Controller
     {
         $query = Surat::query();
 
-        // Filter berdasarkan input
         if ($request->filled('nama_surat')) {
             $query->where('nama_surat', 'like', '%' . $request->nama_surat . '%');
         }
@@ -62,14 +71,123 @@ class AdminController extends Controller
         if ($request->filled('status_disposisi')) {
             $query->where('status_disposisi', $request->status_disposisi);
         }
+        if ($request->filled('status_revisi')) {
+            $query->where('status_revisi', $request->status_revisi);
+        }
 
-        // Ambil hasil
         $surats = $query->latest()->get();
 
-        // Kirim kembali input filter ke view agar terisi ulang
-        return view('admin.surat', [
+        return view('admin.surat', [  // ganti dengan nama view Anda
             'surats' => $surats,
-            'request' => $request
+            'filter' => $request->all(), // agar bisa isi ulang filter
         ]);
+    }
+
+    public function suratEdit($slug)
+    {
+        $surat = Surat::where('slug', $slug)->first();
+        return view('admin.surat-edit', compact('surat'));
+    }
+
+    public function suratEditPost(Request $request)
+    {
+        $validated = $request->validate([
+            'id'             => 'required|exists:surats,id',
+            'nama_surat'     => 'required|string|max:255',
+            'nomor_surat'    => 'required|string|max:255|unique:surats,nomor_surat,' . $request->id,
+            'kode_surat'     => 'nullable|string|max:100',
+            'tanggal_surat'  => 'required|date',
+            'pengirim'       => 'required|string|max:255',
+            'penerima'       => 'required|string|max:255',
+            'jenis_surat'    => 'required|in:masuk,keluar',
+            'perihal'        => 'nullable|string',
+            'keterangan'     => 'nullable|string',
+            'file_surat'     => 'nullable|mimes:pdf,doc,docx,xls,xlsx|max:10048',
+        ]);
+
+
+        $surat = Surat::find($validated['id']);
+
+        if (!$surat) {
+            return redirect()->route('admin.surat')->with('error', 'Surat tidak ditemukan.');
+        }
+
+        if ($request->hasFile('file_surat')) {
+            $validated['file_surat'] = $request->file('file_surat')->store('surat_files', 'public');
+        }
+
+        $validated['status_revisi'] = 'selesai';
+
+        $surat->update($validated);
+
+        return redirect()->route('admin.surat')->with('success', 'Surat berhasil diperbarui.');
+    }
+
+
+    public function suratDisposisi()
+    {
+        $surats = Surat::where('status_disposisi', 'disposisi')->get();
+        return view('admin.surat', compact('surats'));
+    }
+    public function suratPending()
+    {
+        $surats = Surat::where('status_disposisi', 'pending')->get();
+        return view('admin.surat', compact('surats'));
+    }
+    public function userFilterPost(Request $request)
+    {
+        $query = User::query();
+
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->filled('email')) {
+            $query->where('email', 'like', '%' . $request->email . '%');
+        }
+
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        $users = $query->latest()->get();
+
+        return view('admin.user', [  // ganti dengan nama view Anda
+            'users' => $users,
+            'filter' => $request->all(), // agar bisa isi ulang filter
+        ]);
+    }
+
+    // User
+    public function user()
+    {
+        $users = User::all();
+        return view('admin.user', compact('users'));
+    }
+
+    public function userCreate()
+    {
+        return view('admin.user-create');
+    }
+
+    public function userCreatePost(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'role' => 'required|in:admin,camat,pegawai',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        // Simpan user ke database
+        User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'role' => $validated['role'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('admin.user')->with('success', 'User berhasil ditambahkan.');
     }
 }

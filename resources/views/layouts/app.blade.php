@@ -4,12 +4,12 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Dashboard | Clivax - Admin & Dashboard Template</title>
+    <title>Dashboard | Arsip Digital</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Codebucks" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
 
 
     <!-- dark layout js -->
@@ -23,6 +23,8 @@
     <link href="{{ asset('assets/libs/simplebar/simplebar.min.css') }}" rel="stylesheet">
     <!-- App Css-->
     <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 
 </head>
 
@@ -95,8 +97,8 @@
                                     <div class="card-body p-0">
 
                                     </div>
-                                    <div class="card-footer card-footer-bordered rounded-0"><a href="auth-login.html"
-                                            class="btn btn-label-danger">Sign out</a></div>
+                                    <div class="card-footer card-footer-bordered rounded-0"><a
+                                            href="{{ route('logout') }}" class="btn btn-label-danger">Sign out</a></div>
                                 </div>
                             </div>
                         </div>
@@ -162,17 +164,17 @@
                                 <span>Management User</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{{ route('admin.surat') }}"><i
+                                <li><a href="{{ route('admin.user.create') }}"><i
                                             class="mdi mdi-checkbox-blank-circle align-middle"></i>Add New User</a></li>
-                                <li><a href="{{ route('admin.surat.create') }}"><i
+                                <li><a href="{{ route('admin.user') }}"><i
                                             class="mdi mdi-checkbox-blank-circle align-middle"></i>User List</a></li>
                             </ul>
                         </li>
                     </ul>
-                    @elseif(Auth::user->role == 'camat')
+                    @elseif(Auth::user()->role == 'camat')
                     <ul class="left-menu list-unstyled" id="side-menu">
                         <li>
-                            <a href="{{ route('admin.dashboard') }}" class="">
+                            <a href="{{ route('camat.dashboard') }}" class="">
                                 <i class="fas fa-desktop"></i>
                                 <span>Dashboard</span>
                             </a>
@@ -185,23 +187,49 @@
                                 <span>Database Surat</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{{ route('admin.surat') }}"><i
-                                            class="mdi mdi-checkbox-blank-circle align-middle"></i>Data Surat</a></li>
-                                <li><a href="{{ route('admin.surat.create') }}"><i
-                                            class="mdi mdi-checkbox-blank-circle align-middle"></i>Input Surat</a></li>
+                                <li>
+                                    <a href="{{ route('camat.surat') }}">
+                                        <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Semua Surat
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('camat.surat.disposisi') }}">
+                                        <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Surat Terdisposisi
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('camat.surat.pending') }}">
+                                        <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Surat Menunggu
+                                        Disposisi
+                                    </a>
+                                </li>
                             </ul>
+
                         </li>
+                    </ul>
+                    @elseif(Auth::user()->role == 'pegawai')
+                    <ul class="left-menu list-unstyled" id="side-menu">
+                        <li>
+                            <a href="{{ route('pegawai.dashboard') }}" class="">
+                                <i class="fas fa-desktop"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="menu-title">Arsip</li>
                         <li>
                             <a href="javascript: void(0);" class="has-arrow ">
-                                <i class="fa fa-users"></i>
-                                <span>Management User</span>
+                                <i class="fa fa-database"></i>
+                                <span>Database Surat</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{{ route('admin.surat') }}"><i
-                                            class="mdi mdi-checkbox-blank-circle align-middle"></i>Add New User</a></li>
-                                <li><a href="{{ route('admin.surat.create') }}"><i
-                                            class="mdi mdi-checkbox-blank-circle align-middle"></i>User List</a></li>
+                                <li>
+                                    <a href="{{ route('pegawai.surat') }}">
+                                        <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Data Surat Disposisi
+                                    </a>
+                                </li>
                             </ul>
+
                         </li>
                     </ul>
                     @endif
@@ -237,7 +265,25 @@
                         </div>
                     </div>
                     <!--    end row -->
-
+                    @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                    @endif
+                    @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                    @endif
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
                     @yield('content')
                     <!-- end row -->
                 </div>
@@ -259,7 +305,7 @@
     <!-- end layout-wrapper -->
 
 
-   
+
     <!-- JAVASCRIPT -->
     <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

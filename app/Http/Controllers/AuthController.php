@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Disposisi;
+use App\Models\Surat;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,11 +43,17 @@ class AuthController extends Controller
         ])->withInput();
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('index');
+        return redirect()->route('login');
+    }
+
+
+    public function suratDetail($slug) {
+        $suratDetail = Surat::where('slug', $slug)->firstOrFail();
+        $disposisi = Disposisi::where('surat_id', $suratDetail->id)->get();
+        $pegawai = User::where('role', 'pegawai')->get();
+        return view('surat-detail', compact('suratDetail', 'disposisi', 'pegawai'));
     }
 }

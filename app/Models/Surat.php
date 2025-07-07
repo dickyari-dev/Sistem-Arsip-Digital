@@ -20,10 +20,13 @@ class Surat extends Model
         'penerima',
         'jenis_surat',
         'status_disposisi',
+        'status_revisi',
         'keterangan_revisi',
+        'jawaban_revisi',
         'perihal',
         'keterangan',
         'admin_id',
+        'slug',
     ];
 
     // Relasi ke user (admin yang input)

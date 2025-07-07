@@ -8,14 +8,11 @@
                 <h4 class="card-title mb-3 ">Data Surat</h4>
                 <p class="text-muted mb-0">Data surat terbaru</p>
             </div>
-            <div class="mb-3">
-                <a href="{{ route('admin.surat.create') }}" class="btn btn-primary">+ Tambah Surat</a>
-            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <div class="filter">
-                    <form action="{{ route('admin.surat.filter') }}" method="post">
+                    <form action="{{ route('camat.surat.filter') }}" method="post">
                         @csrf
                         <div class="input-group mb-3 flex-wrap">
 
@@ -49,20 +46,10 @@
                                         : '' }}>Disposisi</option>
                                 </select>
                             </div>
-                            <div class="me-2 mb-2">
-                                <label for="status_revisi" class="form-label">Status Revisi</label>
-                                <select name="status_revisi" id="status_revisi" class="form-select">
-                                    <option value="">Semua</option>
-                                    <option value="revisi" {{ request('status_revisi')=='revisi' ? 'selected' : ''
-                                        }}>Perlu Revisi</option>
-                                    <option value="disposisi" {{ request('status_revisi')=='selesai' ? 'selected'
-                                        : '' }}>Selesai</option>
-                                </select>
-                            </div>
 
                             <div class="me-2 mb-2 d-flex align-items-end">
                                 <button class="btn btn-primary me-2" type="submit">Cari</button>
-                                <a href="{{ route('admin.surat') }}" class="btn btn-secondary">Clear</a>
+                                <a href="{{ route('camat.surat') }}" class="btn btn-secondary">Clear</a>
                             </div>
 
                         </div>
@@ -79,7 +66,6 @@
                             <th>Tanggal</th>
                             <th>Jenis</th>
                             <th>Status Disposisi</th>
-                            <th>Status Revisi</th>
                             <th>File</th>
                             <th>Aksi</th>
                         </tr>
@@ -94,27 +80,18 @@
                             <td>{{ \Carbon\Carbon::parse($surat->tanggal_surat)->format('d/m/Y') }}</td>
                             <td>
                                 @if ($surat->jenis_surat === 'masuk')
-                                <span class="badge bg-primary">Surat Masuk</span>
+                                <span class="badge bg-primary">Masuk</span>
                                 @elseif ($surat->jenis_surat === 'keluar')
-                                <span class="badge bg-danger">Surat Masuk</span>
+                                <span class="badge bg-danger">Masuk</span>
                                 @endif
                             </td>
                             <td>
                                 @if($surat->status_disposisi === 'disposisi')
-                                <span class="badge bg-primary">Terdisposisi</span>
+                                <span class="badge bg-primary">Sudah</span>
                                 @elseif($surat->status_disposisi === 'revisi')
                                 <span class="badge bg-warning text-dark">Perlu Revisi</span>
                                 @else
                                 <span class="badge bg-secondary">Pending</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if($surat->status_revisi === 'selesai')
-                                <span class="badge bg-primary">Selesai Revisi</span>
-                                @elseif($surat->status_revisi === 'revisi')
-                                <span class="badge bg-warning text-dark">Perlu Revisi</span>
-                                @else
-                                <span class="badge bg-secondary">Menunggu Konfirmasi</span>
                                 @endif
                             </td>
                             <td>
@@ -131,15 +108,6 @@
                                 {{-- Tambahkan route edit/delete jika ada --}}
                                 <a href="{{ route('surat.detail', $surat->slug) }}"
                                     class="btn btn-sm btn-info">Detail</a>
-                                <a href="{{ route('admin.surat.edit', $surat->slug) }}"
-                                    class="btn btn-sm btn-warning">Edit</a>
-                                <form action="{{ route('admin.surat.delete') }}" method="POST"
-                                    style="display:inline-block;"
-                                    onsubmit="return confirm('Yakin ingin hapus surat ini?')">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $surat->id }}">
-                                    <button class="btn btn-sm btn-danger">Hapus</button>
-                                </form>
                             </td>
                         </tr>
                         @empty

@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Disposisi extends Model
 {
     use HasFactory;
+    protected $table = 'disposisi_surat';
     protected $fillable = [
         'surat_id',
-        'camat_id',
         'pegawai_id',
+        'dari_user_id',
         'catatan',
-        'tanggal_disposisi',
+        'status',
     ];
 
     // Relasi ke surat
@@ -22,24 +23,15 @@ class Disposisi extends Model
         return $this->belongsTo(Surat::class);
     }
 
-    // Relasi ke camat (user yang melakukan disposisi)
-    public function camat()
-    {
-        return $this->belongsTo(User::class, 'camat_id');
-    }
-
-    // Relasi ke pegawai (user yang menerima disposisi)
+    // Relasi ke user yang menerima disposisi (pegawai)
     public function pegawai()
     {
         return $this->belongsTo(User::class, 'pegawai_id');
     }
-    public function disposisiSebagaiCamat()
-    {
-        return $this->hasMany(Disposisi::class, 'camat_id');
-    }
 
-    public function disposisiSebagaiPegawai()
+    // Relasi ke user yang memberikan disposisi (misal Camat)
+    public function camat()
     {
-        return $this->hasMany(Disposisi::class, 'pegawai_id');
+        return $this->belongsTo(User::class, 'dari_user_id');
     }
 }
