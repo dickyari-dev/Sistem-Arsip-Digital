@@ -190,4 +190,36 @@ class AdminController extends Controller
         // Redirect dengan pesan sukses
         return redirect()->route('admin.user')->with('success', 'User berhasil ditambahkan.');
     }
+
+    public function userEdit($id)
+    {
+        $user = User::find($id);
+        return view('admin.user-edit', compact('user'));
+    }
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Validasi input
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => "required|email|max:255|unique:users,email,{$id}",
+            'role' => 'required|in:admin,camat,pegawai',
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        // Update data user
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->role = $validated['role'];
+
+        // Jika password diisi, update password
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+
+        $user->save();
+
+        return redirect()->route('admin.user')->with('success', 'Data user berhasil diperbarui.');
+    }
 }

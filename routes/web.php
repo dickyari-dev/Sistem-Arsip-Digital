@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth.check:admin']], function () {
     Route::get('/admin/user/create', [AdminController::class, 'userCreate'])->name('admin.user.create');
     Route::post('/admin/user/create/post', [AdminController::class, 'userCreatePost'])->name('admin.user.create.post');
     Route::get('/admin/user/edit/{id}', [AdminController::class, 'userEdit'])->name('admin.user.edit');
+    Route::put('/admin/user/{id}', [AdminController::class, 'update'])->name('admin.user.update');
     Route::post('/admin/user/edit/post', [AdminController::class, 'userEditPost'])->name('admin.user.edit.post');
     Route::post('/admin/user/delete', [AdminController::class, 'userDeletePost'])->name('admin.user.delete');
 });

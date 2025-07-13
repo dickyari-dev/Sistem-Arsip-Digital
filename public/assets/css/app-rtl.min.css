@@ -393,7 +393,7 @@ body[data-layout=horizontal] .footer {
 }
 
 .mm-active {
-  color: #38c66c !important;
+  color: #fff !important;
 }
 .mm-active > a {
   border-right: 4px solid #38c66c;

@@ -40,9 +40,9 @@
                 <!-- Logo -->
 
                 <!-- Start Navbar-Brand -->
-                <div class="navbar-logo-box">
+                <div class="navbar-logo-box" style="background: #000">
                     <a href="index.html" class="logo logo-dark">
-                        <span class="text-uppercase fs-17 fw-bold">
+                        <span class="text-uppercase fs-17 fw-bold" color="#fff">
                             Arsip Digital
                         </span>
                     </a>
@@ -111,12 +111,12 @@
         <!-- End topbar -->
 
         <!-- ========== Left Sidebar Start ========== -->
-        <div class="sidebar-left">
+        <div class="sidebar-left" style="background: #000; color: #fff;!important ">
 
             <div data-simplebar class="h-100">
 
                 <!--- Sidebar-menu -->
-                <div id="sidebar-menu">
+                <div id="sidebar-menu" style="color: #fff">
                     <!-- Left Menu Start -->
                     @if (Auth::user()->role == 'admin')
                     <ul class="left-menu list-unstyled" id="side-menu">
@@ -208,7 +208,7 @@
                         </li>
                     </ul>
                     @elseif(Auth::user()->role == 'pegawai')
-                    <ul class="left-menu list-unstyled" id="side-menu">
+                    <ul class="left-menu list-unstyled" id="side-menu" style="color: #fff">
                         <li>
                             <a href="{{ route('pegawai.dashboard') }}" class="">
                                 <i class="fas fa-desktop"></i>
