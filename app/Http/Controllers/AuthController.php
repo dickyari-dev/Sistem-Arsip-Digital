@@ -7,6 +7,7 @@ use App\Models\Surat;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -50,10 +51,42 @@ class AuthController extends Controller
     }
 
 
-    public function suratDetail($slug) {
+    public function suratDetail($slug)
+    {
         $suratDetail = Surat::where('slug', $slug)->firstOrFail();
         $disposisi = Disposisi::where('surat_id', $suratDetail->id)->get();
         $pegawai = User::where('role', 'pegawai')->get();
         return view('surat-detail', compact('suratDetail', 'disposisi', 'pegawai'));
+    }
+
+    public function profile()
+    {
+        return view('profile');
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validasi input
+        $validated = $request->validate([
+            'id'       => 'required|exists:users,id',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed', // password_confirmation harus ada di form
+        ]);
+
+        // Update data user
+        $user->name  = $validated['name'];
+        $user->email = $validated['email'];
+
+        // Jika password diisi, update password
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
     }
 }

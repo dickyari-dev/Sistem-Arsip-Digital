@@ -43,13 +43,13 @@
                 <div class="navbar-logo-box" style="background: #000">
                     <a href="index.html" class="logo logo-dark">
                         <span class="text-uppercase fs-17 fw-bold" color="#fff">
-                            Arsip Digital
+                            Arsip
                         </span>
                     </a>
 
                     <a href="index.html" class="logo logo-light">
                         <span class="text-uppercase fs-17 fw-bold">
-                            Arsip Digital
+                            Arsip
                         </span>
                     </a>
 
@@ -95,7 +95,17 @@
                                         </div>
                                     </div>
                                     <div class="card-body p-0">
-
+                                        <div class="list-group list-group-flush">
+                                            <div class="grid-nav grid-nav-flush grid-nav-action grid-nav-no-rounded">
+                                                <div class="grid-nav-row">
+                                                    <a href="{{ route('profile') }}" class="grid-nav-item">
+                                                        <div class="grid-nav-icon"><i class="far fa-address-card"></i>
+                                                        </div>
+                                                        <span class="grid-nav-content">Profile</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="card-footer card-footer-bordered rounded-0"><a
                                             href="{{ route('logout') }}" class="btn btn-label-danger">Sign out</a></div>
@@ -134,25 +144,24 @@
                                 <span>Database Surat</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                <li>
+                                {{-- <li>
                                     <a href="{{ route('admin.surat') }}">
                                         <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Semua Surat
                                     </a>
-                                </li>
+                                </li> --}}
                                 <li>
                                     <a href="{{ route('admin.surat.create') }}">
                                         <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Tambah Surat Masuk
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('admin.surat.disposisi') }}">
-                                        <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Surat Terdisposisi
+                                    <a href="{{ route('admin.surat.masuk') }}">
+                                        <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Surat Masuk
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('admin.surat.pending') }}">
-                                        <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Surat Menunggu
-                                        Disposisi
+                                    <a href="{{ route('admin.surat.keluar') }}">
+                                        <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Surat Keluar
                                     </a>
                                 </li>
                             </ul>
@@ -161,13 +170,16 @@
                         <li>
                             <a href="javascript: void(0);" class="has-arrow ">
                                 <i class="fa fa-users"></i>
-                                <span>Management User</span>
+                                <span>User & Setting</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
                                 <li><a href="{{ route('admin.user.create') }}"><i
                                             class="mdi mdi-checkbox-blank-circle align-middle"></i>Add New User</a></li>
                                 <li><a href="{{ route('admin.user') }}"><i
                                             class="mdi mdi-checkbox-blank-circle align-middle"></i>User List</a></li>
+                                <li><a href="{{ route('admin.category') }}"><i
+                                            class="mdi mdi-checkbox-blank-circle align-middle"></i>Setting Category</a>
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -192,7 +204,7 @@
                                         <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Semua Surat
                                     </a>
                                 </li>
-                                <li>
+                                {{-- <li>
                                     <a href="{{ route('camat.surat.disposisi') }}">
                                         <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Surat Terdisposisi
                                     </a>
@@ -201,6 +213,16 @@
                                     <a href="{{ route('camat.surat.pending') }}">
                                         <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Surat Menunggu
                                         Disposisi
+                                    </a>
+                                </li> --}}
+                                <li>
+                                    <a href="{{ route('camat.surat.masuk') }}">
+                                        <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Surat Masuk
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('camat.surat.keluar') }}">
+                                        <i class="mdi mdi-checkbox-blank-circle align-middle"></i> Surat Keluar
                                     </a>
                                 </li>
                             </ul>

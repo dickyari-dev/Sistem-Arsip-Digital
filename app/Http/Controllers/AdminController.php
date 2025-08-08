@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Surat;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,12 +17,14 @@ class AdminController extends Controller
     }
     public function suratCreate()
     {
-        return view('admin.surat-create');
+        $categories = Category::where('status', 'active')->get();
+        return view('admin.surat-create', compact('categories'));
     }
     public function surat()
     {
         $surats = Surat::all();
-        return view('admin.surat', compact('surats'));
+        $categories = Category::where('status', 'active')->get();
+        return view('admin.surat', compact('surats', 'categories'));
     }
     public function suratCreatePost(Request $request)
     {
@@ -36,6 +39,7 @@ class AdminController extends Controller
             'perihal'        => 'nullable|string',
             'keterangan'     => 'nullable|string',
             'file_surat'     => 'required|mimes:pdf, doc, docx, xls, xlsx|max:10048',
+            'category_id'    => 'required|exists:categories,id',
         ]);
 
         // Create Slug 
@@ -74,19 +78,26 @@ class AdminController extends Controller
         if ($request->filled('status_revisi')) {
             $query->where('status_revisi', $request->status_revisi);
         }
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
 
         $surats = $query->latest()->get();
+        $categories = Category::where('status', 'active')->get();
 
         return view('admin.surat', [  // ganti dengan nama view Anda
             'surats' => $surats,
             'filter' => $request->all(), // agar bisa isi ulang filter
+            'categories' => $categories
         ]);
     }
 
     public function suratEdit($slug)
     {
         $surat = Surat::where('slug', $slug)->first();
-        return view('admin.surat-edit', compact('surat'));
+        $categories = Category::where('status', 'active')->get();
+
+        return view('admin.surat-edit', compact('surat', 'categories'));
     }
 
     public function suratEditPost(Request $request)
@@ -103,6 +114,7 @@ class AdminController extends Controller
             'perihal'        => 'nullable|string',
             'keterangan'     => 'nullable|string',
             'file_surat'     => 'nullable|mimes:pdf,doc,docx,xls,xlsx|max:10048',
+            'category_id'    => 'required|exists:categories,id',
         ]);
 
 
@@ -158,6 +170,19 @@ class AdminController extends Controller
         ]);
     }
 
+
+    public function suratMasuk()
+    {
+        $surats = Surat::where('jenis_surat', 'masuk')->get();
+        $categories = Category::where('status', 'active')->get();
+        return view('admin.surat', compact('surats', 'categories'));
+    }
+    public function suratKeluar()
+    {
+        $surats = Surat::where('jenis_surat', 'keluar')->get();
+        $categories = Category::where('status', 'active')->get();
+        return view('admin.surat', compact('surats', 'categories'));
+    }
     // User
     public function user()
     {
@@ -221,5 +246,50 @@ class AdminController extends Controller
         $user->save();
 
         return redirect()->route('admin.user')->with('success', 'Data user berhasil diperbarui.');
+    }
+
+    public function category()
+    {
+        $categories = Category::where('status', 'active')->get();
+        return view('admin.category', compact('categories'));
+    }
+
+    public function categoryStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        Category::create([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'status' => 'active'
+        ]);
+
+        return redirect()->back()->with('success', 'Category berhasil ditambahkan.');
+    }
+
+    public function categoryUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $category = Category::findOrFail($id);
+        $category->update([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+        ]);
+
+        return redirect()->back()->with('success', 'Category berhasil diupdate.');
+    }
+
+    public function categoryDestroy($id)
+    {
+        $category = Category::findOrFail($id);
+        $category->status = 'inactive';
+        $category->save();
+
+        return redirect()->back()->with('success', 'Category berhasil dihapus.');
     }
 }

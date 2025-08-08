@@ -91,6 +91,11 @@
                                 </td>
                             </tr>
                             <tr>
+                                <th>Kategori Surat</th>
+                                <td>:</td>
+                                <td><span class="badge bg-info">{{ $suratDetail->category->name ? $suratDetail->category->name : '-' }}</span></td>
+                            </tr>
+                            <tr>
                                 <th>Keterangan Surat</th>
                                 <td>:</td>
                                 <td>{{ $suratDetail->keterangan ? $suratDetail->keterangan : '-' }}</td>

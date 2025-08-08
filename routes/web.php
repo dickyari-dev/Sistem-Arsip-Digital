@@ -27,7 +27,9 @@ Route::post('/loginPost', [AuthController::class, 'loginPost'])->name('loginPost
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/surat/detail/{slug}', [AuthController::class, 'suratDetail'])->name('surat.detail');
-
+// web.php
+Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+Route::post('/profile/update', [AuthController::class, 'profileUpdate'])->name('profile.update');
 
 Route::group(['middleware' => ['auth.check:admin']], function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -43,6 +45,8 @@ Route::group(['middleware' => ['auth.check:admin']], function () {
 
     Route::get('/admin/surat/disposisi', [AdminController::class, 'suratDisposisi'])->name('admin.surat.disposisi');
     Route::get('/admin/surat/pending', [AdminController::class, 'suratPending'])->name('admin.surat.pending');
+    Route::get('/admin/surat/masuk', [AdminController::class, 'suratMasuk'])->name('admin.surat.masuk');
+    Route::get('/admin/surat/keluar', [AdminController::class, 'suratKeluar'])->name('admin.surat.keluar');
 
 
     // Admin Surat
@@ -54,6 +58,12 @@ Route::group(['middleware' => ['auth.check:admin']], function () {
     Route::put('/admin/user/{id}', [AdminController::class, 'update'])->name('admin.user.update');
     Route::post('/admin/user/edit/post', [AdminController::class, 'userEditPost'])->name('admin.user.edit.post');
     Route::post('/admin/user/delete', [AdminController::class, 'userDeletePost'])->name('admin.user.delete');
+
+    Route::get('/admin/category', [AdminController::class, 'category'])->name('admin.category');
+    Route::get('/admin/category/create', [AdminController::class, 'categoryCreate'])->name('admin.category.create');
+    Route::post('/admin/category/store', [AdminController::class, 'categoryStore'])->name('categories.store');
+    Route::put('/categories/update/{id}', [AdminController::class, 'categoryUpdate'])->name('categories.update');
+    Route::delete('/categories/destroy/{id}', [AdminController::class, 'categoryDestroy'])->name('categories.destroy');
 });
 
 Route::group(['middleware' => ['auth.check:camat']], function () {
@@ -68,11 +78,14 @@ Route::group(['middleware' => ['auth.check:camat']], function () {
     Route::post('/camat/disposisi/batal', [CamatController::class, 'disposisiBatal'])->name('camat.batal-disposisi');
 
     Route::post('/camat/user/filter', [CamatController::class, 'userFilterPost'])->name('camat.user.filter');
+
+    Route::get('/camat/surat/masuk', [CamatController::class, 'suratMasuk'])->name('camat.surat.masuk');
+    Route::get('/camat/surat/keluar', [CamatController::class, 'suratKeluar'])->name('camat.surat.keluar');
+
 });
 
 Route::group(['middleware' => ['auth.check:pegawai']], function () {
     Route::get('/pegawai/dashboard', [PegawaiController::class, 'dashboard'])->name('pegawai.dashboard');
     Route::get('/pegawai/surat', [PegawaiController::class, 'surat'])->name('pegawai.surat');
     Route::post('/pegawai/surat/dibaca', [PegawaiController::class, 'suratDibaca'])->name('pegawai.surat.dibaca');
-
 });

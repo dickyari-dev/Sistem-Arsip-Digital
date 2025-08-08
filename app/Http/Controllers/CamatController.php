@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Disposisi;
 use App\Models\Surat;
 use App\Models\User;
@@ -18,7 +19,8 @@ class CamatController extends Controller
     public function surat()
     {
         $surats = Surat::all();
-        return view('camat.surat', compact('surats'));
+        $categories = Category::where('status', 'active')->get();
+        return view('camat.surat', compact('surats', 'categories'));
     }
 
     public function suratFilterPost(Request $request)
@@ -40,12 +42,16 @@ class CamatController extends Controller
         if ($request->filled('status_disposisi')) {
             $query->where('status_disposisi', $request->status_disposisi);
         }
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
 
         $surats = $query->latest()->get();
-
+        $categories = Category::where('status', 'active')->get();
         return view('camat.surat', [  // ganti dengan nama view Anda
             'surats' => $surats,
             'filter' => $request->all(), // agar bisa isi ulang filter
+            'categories' => $categories
         ]);
     }
 
@@ -114,7 +120,8 @@ class CamatController extends Controller
         return redirect()->back()->with('success', 'Surat berhasil Disposisi ke Pegawai.');
     }
 
-    public function batalDisposisi($id) {
+    public function batalDisposisi($id)
+    {
         $disposisi = Disposisi::find($id);
 
         if (!$disposisi) {
@@ -132,6 +139,18 @@ class CamatController extends Controller
         }
 
         return redirect()->back()->with('success', 'Disposisi berhasil dibatalkan.');
+    }
 
+    public function suratMasuk()
+    {
+        $surats = Surat::where('jenis_surat', 'masuk')->get();
+        $categories = Category::where('status', 'active')->get();
+        return view('camat.surat', compact('surats', 'categories'));
+    }
+    public function suratKeluar()
+    {
+        $surats = Surat::where('jenis_surat', 'keluar')->get();
+        $categories = Category::where('status', 'active')->get();
+        return view('camat.surat', compact('surats', 'categories'));
     }
 }

@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Surat extends Model
 {
     use HasFactory;
-    use HasFactory;
 
     protected $fillable = [
+        'category_id',
         'nama_surat',
+        'slug',
         'nomor_surat',
-        'file_surat',
         'kode_surat',
+        'file_surat',
         'tanggal_surat',
         'pengirim',
         'penerima',
@@ -26,23 +27,28 @@ class Surat extends Model
         'perihal',
         'keterangan',
         'admin_id',
-        'slug',
     ];
 
-    // Relasi ke user (admin yang input)
+    /**
+     * Relasi ke Category
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Relasi ke User (admin yang input)
+     */
     public function admin()
     {
         return $this->belongsTo(User::class, 'admin_id');
     }
 
-    // Relasi ke disposisi (jika satu surat hanya satu disposisi)
-    public function disposisi()
-    {
-        return $this->hasOne(Disposisi::class);
-    }
-
-    // Jika satu surat bisa didisposisikan ke beberapa pegawai (opsional)
-    public function semuaDisposisi()
+    /**
+     * Relasi ke Disposisi (jika satu surat punya banyak disposisi)
+     */
+    public function disposisis()
     {
         return $this->hasMany(Disposisi::class);
     }

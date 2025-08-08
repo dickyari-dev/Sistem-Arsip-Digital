@@ -65,6 +65,21 @@
                                 </option>
                             </select>
                         </div>
+                        {{-- Category --}}
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Kategori Surat</label>
+                            <select name="category_id" class="form-select" required>
+                                <option value="">-- Pilih Kategori --</option>
+                                @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id', isset($surat) ? $surat->
+                                    category_id : '') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+
                         <div class="mb-4">
                             <label for="file_surat" class="form-label fw-semibold">Upload File Surat (PDF)</label>
                             <div class="input-group">
@@ -77,7 +92,8 @@
                                 </a>
                                 @endif
                             </div>
-                            <div class="form-text text-muted">File harus berformat PDF / Word / Excel. Maksimal ukuran 2MB.</div>
+                            <div class="form-text text-muted">File harus berformat PDF / Word / Excel. Maksimal ukuran
+                                2MB.</div>
                         </div>
 
                     </div>

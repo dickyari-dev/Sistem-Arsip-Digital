@@ -47,6 +47,19 @@
                                 </select>
                             </div>
 
+                            <div class="me-2 mb-2">
+                                <label for="category_id" class="form-label">Kategori Surat</label>
+                                <select name="category_id" id="category_id" class="form-select">
+                                    <option value="">Semua</option>
+                                    @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ request('category_id')==$category->id ?
+                                        'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="me-2 mb-2 d-flex align-items-end">
                                 <button class="btn btn-primary me-2" type="submit">Cari</button>
                                 <a href="{{ route('camat.surat') }}" class="btn btn-secondary">Clear</a>
@@ -64,6 +77,7 @@
                             <th>Nomor</th>
                             <th>Kode</th>
                             <th>Tanggal</th>
+                            <th>Kategori</th>
                             <th>Jenis</th>
                             <th>Status Disposisi</th>
                             <th>File</th>
@@ -78,6 +92,10 @@
                             <td>{{ $surat->nomor_surat }}</td>
                             <td>{{ $surat->kode_surat ?? '-' }}</td>
                             <td>{{ \Carbon\Carbon::parse($surat->tanggal_surat)->format('d/m/Y') }}</td>
+                            <td>
+                                {{-- Kategori --}}
+                                <span class="badge bg-info">{{ $surat->category->name ?? '-' }}</span>
+                            </td>
                             <td>
                                 @if ($surat->jenis_surat === 'masuk')
                                 <span class="badge bg-primary">Masuk</span>

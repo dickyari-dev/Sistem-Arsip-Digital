@@ -49,6 +49,19 @@
                                         : '' }}>Disposisi</option>
                                 </select>
                             </div>
+                            {{-- Category--}}
+                            <div class="me-2 mb-2">
+                                <label for="category_id" class="form-label">Kategori Surat</label>
+                                <select name="category_id" id="category_id" class="form-select">
+                                    <option value="">Semua</option>
+                                    @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ request('category_id')==$category->id ?
+                                        'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <div class="me-2 mb-2">
                                 <label for="status_revisi" class="form-label">Status Revisi</label>
                                 <select name="status_revisi" id="status_revisi" class="form-select">
@@ -77,6 +90,7 @@
                             <th>Nomor</th>
                             <th>Kode</th>
                             <th>Tanggal</th>
+                            <th>Kategori</th>
                             <th>Jenis</th>
                             <th>Status Disposisi</th>
                             <th>Status Revisi</th>
@@ -92,6 +106,10 @@
                             <td>{{ $surat->nomor_surat }}</td>
                             <td>{{ $surat->kode_surat ?? '-' }}</td>
                             <td>{{ \Carbon\Carbon::parse($surat->tanggal_surat)->format('d/m/Y') }}</td>
+                            <td>
+                                {{-- Kategori --}}
+                                <span class="badge bg-info">{{ $surat->category->name ?? '-' }}</span>
+                            </td>
                             <td>
                                 @if ($surat->jenis_surat === 'masuk')
                                 <span class="badge bg-primary">Surat Masuk</span>
