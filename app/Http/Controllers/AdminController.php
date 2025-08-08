@@ -13,7 +13,10 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $suratMasukCount = Surat::where('jenis_surat', 'masuk')->count();
+        $suratKeluarCount = Surat::where('jenis_surat', 'keluar')->count();
+        $suratCount = Surat::all()->count();
+        return view('admin.dashboard', compact('suratMasukCount', 'suratKeluarCount', 'suratCount'));
     }
     public function suratCreate()
     {

@@ -13,7 +13,10 @@ class CamatController extends Controller
 {
     public function dashboard()
     {
-        return view('camat.dashboard');
+        $suratMasukCount = Surat::where('jenis_surat', 'masuk')->count();
+        $suratKeluarCount = Surat::where('jenis_surat', 'keluar')->count();
+        $suratCount = Surat::all()->count();
+        return view('camat.dashboard', compact('suratMasukCount', 'suratKeluarCount', 'suratCount'));
     }
 
     public function surat()
